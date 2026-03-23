@@ -142,7 +142,7 @@ async def input_loop():
 
 # ===== 실행 =====
 async def main():
-    async with websockets.serve(handler, "localhost", 8000):
+    async with websockets.serve(handler, "0.0.0.0", 8000):
         print("Server started")
 
         await asyncio.gather(

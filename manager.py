@@ -139,7 +139,7 @@ class ManagerAgent:
 async def run():
     agent = ManagerAgent()
 
-    async with websockets.connect("ws://localhost:8000") as ws:
+    async with websockets.connect("ws://input_your_server_ip:8000") as ws:
 
         await ws.send(json.dumps({
             "type": "register",

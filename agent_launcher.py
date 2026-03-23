@@ -8,7 +8,7 @@ from src.agents.email_agent import invoke_email_agent
 from src.agents.calendar_agent import invoke_calendar_agent
 from src.agents.notion_agent import invoke_notion_agent
 
-SERVER_URI = "ws://localhost:8000"
+SERVER_URI = "ws://input_your_server_ip:8000"
 
 
 AGENT_REGISTRY = {
