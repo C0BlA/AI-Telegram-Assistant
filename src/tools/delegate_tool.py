@@ -1,36 +1,31 @@
 from typing import Optional, Type
+
 from langchain_core.callbacks import CallbackManagerForToolRun
 from langsmith import traceable
 from pydantic import BaseModel, Field
 from langchain.tools import BaseTool
 
-from src.agents.email_agent import invoke_email_agent
-from src.agents.calendar_agent import invoke_calendar_agent
-from src.agents.notion_agent import invoke_notion_agent
-
 
 class DelegateInput(BaseModel):
-    agent_name: str = Field(description="Name of the subagent to delegate to")
-    task: str = Field(description="Task to delegate to the subagent")
+    agent_name: str = Field(description="위임할 하위 에이전트 이름")
+    task: str = Field(description="하위 에이전트에게 전달할 작업")
+
 
 class Delegate(BaseTool):
     name: str = "Delegate"
-    description: str = "Use this to delegate a task to one of your subagents"
+    description: str = (
+        "Use this tool to delegate a task to one of the subagents. "
+        "Valid agent names: Email Agent, Calendar Agent, Notion Agent."
+    )
     args_schema: Type[BaseModel] = DelegateInput
-    
+
     def delegate(self, agent_name: str, task: str) -> str:
         """
-        Simulates delegating a task to a subagent
+        실제 에이전트를 호출하지 않고,
+        매니저가 라우팅할 수 있도록 위임 정보만 남긴다.
         """
-        print(f"Task '{task}' has been delegated to the {agent_name} agent.")
-        if agent_name == "Email Agent":
-            return invoke_email_agent(task)
-        elif agent_name == "Calendar Agent":
-            return invoke_calendar_agent(task)
-        elif agent_name == "Notion Agent":
-            return invoke_notion_agent(task)
-        else:
-            return "Invalid agent name"
+        print(f"[Delegate] agent={agent_name}, task={task}")
+        return f"Task delegated to {agent_name}: {task}"
 
     @traceable(run_type="tool", name="Delegate")
     def _run(
@@ -39,5 +34,4 @@ class Delegate(BaseTool):
         task: str,
         run_manager: Optional[CallbackManagerForToolRun] = None,
     ) -> str:
-        """Use the tool."""
         return self.delegate(agent_name, task)
